@@ -36,6 +36,8 @@ package io.microprofile.sample.jcache.rest;
  * #L%
  */
 
+import io.microprofile.sample.jcache.model.CD;
+import io.microprofile.sample.jcache.persistence.CDRepository;
 import io.microprofile.sample.jcache.utils.QLogger;
 
 import javax.enterprise.context.RequestScoped;
@@ -46,9 +48,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -58,30 +58,20 @@ public class TopCDsEndpoint {
     @Inject
     @QLogger
     private Logger logger;
+    
+    @Inject
+    private CDRepository cdRepo;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getTopCDs() {
 
         final JsonArrayBuilder array = Json.createArrayBuilder();
-        final List<Integer> randomCDs = getRandomNumbers();
-        for (final Integer randomCD : randomCDs) {
-            array.add(Json.createObjectBuilder().add("id", randomCD));
+        final List<CD> topCDs = cdRepo.getTopCDs();
+        for (final CD aCD : topCDs) {
+            array.add(Json.createObjectBuilder().add("id", aCD.getId()));
         }
         return array.build().toString();
     }
 
-    private List<Integer> getRandomNumbers() {
-        final List<Integer> randomCDs = new ArrayList<>();
-        final Random r = new Random();
-        randomCDs.add(r.nextInt(100) + 1101);
-        randomCDs.add(r.nextInt(100) + 1101);
-        randomCDs.add(r.nextInt(100) + 1101);
-        randomCDs.add(r.nextInt(100) + 1101);
-        randomCDs.add(r.nextInt(100) + 1101);
-
-        logger.info("Top CDs are " + randomCDs);
-
-        return randomCDs;
-    }
 }
