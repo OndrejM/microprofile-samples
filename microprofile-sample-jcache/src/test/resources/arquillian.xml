@@ -58,5 +58,6 @@
             <property name="stopPort">-1</property>
         </configuration>
     </container>
+    <container qualifier="glassfish-embedded"/>
 
 </arquillian>
