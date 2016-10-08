@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.microprofile.sample</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>jcache</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>${packaging.type}</packaging>
+    <name>Microprofile Samples :: JCache</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- JAVA EE -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <!-- TEST -->
+        <!-- JBoss Logging required due to older version from resteasy client -->
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-fluent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.universe</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>microprofile-sample-jcache</finalName>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>wildfly-swarm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.swarm</groupId>
+                        <artifactId>wildfly-swarm-plugin</artifactId>
+                        <configuration>
+                            <properties>
+                                <swarm.http.port>8081</swarm.http.port>
+                                <swarm.context.path>/msTopCDs</swarm.context.path>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${version.surefire.plugin}</version>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <systemPropertyVariables>
+                                <arquillian.launch>arquillian-wildfly-swarm</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>microprofile</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>arquillian</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>hammock</id>
+            <dependencies>
+                <dependency>
+                    <groupId>ws.ament.hammock</groupId>
+                    <artifactId>dist-microprofile</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>ws.ament.hammock</groupId>
+                    <artifactId>test-arquillian</artifactId>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-weld-embedded</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>payara</id>
+            <dependencies>
+                <!-- JCache -->
+                <dependency>
+                    <groupId>javax.cache</groupId>
+                    <artifactId>cache-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>
