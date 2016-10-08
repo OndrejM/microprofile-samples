@@ -67,7 +67,7 @@ public class TopCDsEndpoint {
     public String getTopCDs() {
 
         final JsonArrayBuilder array = Json.createArrayBuilder();
-        final List<CD> topCDs = cdRepo.getTopCDs();
+        final List<CD> topCDs = cdRepo.getTopCDs(10);
         for (final CD aCD : topCDs) {
             array.add(Json.createObjectBuilder().add("id", aCD.getId()));
         }
